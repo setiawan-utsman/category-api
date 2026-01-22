@@ -36,7 +36,7 @@ func main() {
 	http.HandleFunc("/api/categories/", categoryIdHandler)
 
 	fmt.Println("Server Running di localhost:8181")
-	err := http.ListenAndServe(":8181", nil)
+	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		fmt.Println("Gagal Running Server")
 	}
