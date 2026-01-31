@@ -1,32 +1,39 @@
-# 📦 Golang Category API (Beginner Friendly)
+# 📦 Golang Category & Product API (Clean Architecture)
 
-Simple backend REST API menggunakan **Go (net/http)** untuk CRUD **Category**.
-Project ini cocok untuk **pemula yang baru belajar Golang backend** tanpa framework tambahan.
+Backend REST API menggunakan **Go (net/http)** dengan pola design **Service & Repository Pattern**. Project ini mendemonstrasikan integrasi database PostgreSQL (Supabase) dan pengelolaan data yang terstruktur.
 
 ---
 
 ## 📌 Ketentuan Cabang (Branches)
 
-*   **`main`**: Versi stabil dasar. Data masih disimpan di **memory (slice)** dan belum terkoneksi ke database.
+*   **`crud-no-database`**: Versi stabil dasar. Data masih disimpan di **memory (slice)** dan belum terkoneksi ke database.
 *   **`crud-database`**: Versi lanjutan yang sudah **terkoneksi database Supabase**. Menggunakan UUID untuk ID dan mendukung relasi antar tabel.
 
+---
 
-## 🚀 Fitur
+## 🚀 Fitur Saat Ini
 
-* Get All Categories
-* Get Category by ID
-* Create Category
-* Update Category
-* Delete Category
-* Response JSON standar (`status`, `message`, `data`)
+### 📁 Category Management
+*   **Get All Categories**: Mengambil daftar kategori lengkap.
+*   **Create Category**: Membuat kategori baru (Auto-generate UUID & CreatedAt).
+*   **Update Category**: Memperbarui informasi kategori.
+*   **Delete Category**: Menghapus kategori.
+
+### 🍱 Product Management
+*   **Get All Products**: Mengambil daftar produk lengkap dengan **JOIN** detail kategori.
+*   **Get Products by Category ID**: Filter produk berdasarkan ID kategori tertentu.
+*   **Create Product**: Membuat produk baru terintegrasi dengan `category_id`.
+*   **Update Product**: Memperbarui data produk.
+*   **Delete Product**: Menghapus produk.
 
 ---
 
 ## 🛠️ Tech Stack
 
-* Go (Golang)
-* net/http (standard library)
-* JSON Encoding / Decoding
+*   **Go (Golang)**: Core language & net/http standard library.
+*   **PostgreSQL (Supabase)**: Database Cloud untuk penyimpanan data.
+*   **Viper**: Management konfigurasi dan environment variables (`.env`).
+*   **JSON Encoding / Decoding**: Pertukaran data antar client-server.
 
 ---
 
@@ -34,156 +41,69 @@ Project ini cocok untuk **pemula yang baru belajar Golang backend** tanpa framew
 
 ```
 category-api/
-├── main.go
-├── go.mod
-└── README.md
+├── database/     # Inisialisasi DB
+├── handlers/     # Request handling & Validation
+├── services/     # Business logic
+├── repositories/ # Query database
+├── models/       # Struct definitions
+├── untils/       # Helpers (Response JSON)
+├── main.go       # Entry point
+└── .env          # Database credentials
 ```
 
 ---
 
-## 📦 Model Category
+## 📦 Model Utama
 
+### Product Request Pattern
 ```go
-type Category struct {
-	ID          int    `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
+type Product struct {
+	Id         string    `json:"id"`
+	CategoryId string    `json:"category_id"`
+	Name       string    `json:"name"`
+	Price      int       `json:"price"`
+	Stock      int       `json:"stock"`
+	Category   Category  `json:"category"` // Populated via JOIN
 }
 ```
 
 ---
 
-## 🔁 Format Response API
+## 🌐 Endpoint API Utama
 
-Semua response menggunakan format yang konsisten:
+### 🍱 Product
+*   `GET /api/products` - List all products (+ details kategori)
+*   `GET /api/products/{category_id}` - Filter produk by kategori
+*   `POST /api/products` - Create new product
+*   `PUT /api/products/` - Update product
+*   `DELETE /api/products/{id}` - Delete product
 
-```json
-{
-  "status": "success",
-  "message": "Category created successfully",
-  "data": {
-    "id": 1,
-    "name": "Makanan",
-    "description": "Produk makanan"
-  }
-}
-```
-
----
-
-## 🌐 Endpoint API
-
-### 🔹 Get All Categories
-
-```
-GET /api/categories
-```
-
-### 🔹 Get Category by ID
-
-```
-GET /api/categories?id=1
-```
-
-### 🔹 Create Category
-
-```
-POST /api/categories
-```
-
-Body JSON:
-
-```json
-{
-  "name": "Minuman",
-  "description": "Produk minuman"
-}
-```
-
-### 🔹 Update Category
-
-```
-PUT /api/categories?id=1
-```
-
-Body JSON:
-
-```json
-{
-  "name": "Snack",
-  "description": "Makanan ringan"
-}
-```
-
-### 🔹 Delete Category
-
-```
-DELETE /api/categories?id=1
-```
+### � Category
+*   `GET /api/categories` - List all categories
+*   `POST /api/categories` - Create new category
+*   `PUT /api/categories/` - Update category
+*   `DELETE /api/categories/{id}` - Delete category
 
 ---
 
 ## ▶️ Cara Menjalankan Project
 
-### 1️⃣ Pastikan Go Terinstall
-
-```bash
-go version
-```
-
-### 2️⃣ Masuk ke Folder Project
-
-```bash
-cd category-api
-```
-
-### 3️⃣ Jalankan Server
-
-```bash
-go run main.go
-```
-
-Jika berhasil:
-
-```
-Server running at http://localhost:8181
-```
+1.  Clone project dan masuk ke branch `crud-database`.
+2.  Siapkan file `.env` dengan format:
+    ```env
+    PORT=8181
+    DB_CONN="postgres://user:pass@host:port/dbname"
+    ```
+3.  Jalankan perintah:
+    ```bash
+    go run main.go
+    ```
 
 ---
 
 ## 🧪 Testing API
 
-Gunakan:
-
-* Postman
-* Thunder Client (VS Code)
-* curl
-
----
-
-## 🎯 Tujuan Project Ini
-
-* Memahami dasar **routing di Golang**
-* Memahami **HTTP Method (GET, POST, PUT, DELETE)**
-* Belajar **struktur backend sederhana**
-* Menyiapkan pondasi sebelum memakai framework (Gin / Fiber)
-
----
-
-## 📌 Catatan
-
-* Data masih disimpan di memory (slice)
-* Belum menggunakan database
-* Cocok untuk belajar konsep dasar backend
-
----
-
-## 📚 Next Step (Recommended)
-
-* Gunakan **Gin / Fiber**
-* Tambahkan **Database (MySQL / PostgreSQL)**
-* Implement **Service & Repository Pattern**
-* Tambahkan **Middleware**
+Disarankan menggunakan **Postman** untuk menguji endpoint. Jangan lupa untuk menyertakan `id` kategori yang benar saat membuat produk demi keamanan relasi data (Foreign Key).
 
 ---
 
