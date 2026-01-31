@@ -6,7 +6,7 @@ Backend REST API menggunakan **Go (net/http)** dengan pola design **Service & Re
 
 ## 📌 Ketentuan Cabang (Branches)
 
-*   **`main`**: Versi stabil dasar. Data masih disimpan di **memory (slice)** dan belum terkoneksi ke database.
+*   **`crud-no-database`**: Versi stabil dasar. Data masih disimpan di **memory (slice)** dan belum terkoneksi ke database.
 *   **`crud-database`**: Versi lanjutan yang sudah **terkoneksi database Supabase**. Menggunakan UUID untuk ID dan mendukung relasi antar tabel.
 
 ---
