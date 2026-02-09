@@ -14,7 +14,7 @@ func NewProductRepository(db *sql.DB) *ProductRepository {
 	return &ProductRepository{db: db}
 }
 
-func (pr *ProductRepository) GetAllProductRepo() []models.Product {
+func (pr *ProductRepository) GetAllProductRepo(name string) []models.Product {
 	var products []models.Product
 
 	// Gunakan SELECT dengan join untuk mengambil detail kategori
@@ -25,7 +25,13 @@ func (pr *ProductRepository) GetAllProductRepo() []models.Product {
 		FROM products p 
 		JOIN categories c ON c.id = p.category_id
 	`
-	rows, err := pr.db.Query(query)
+	args := []any{}
+	if name != "" {
+		query += " WHERE p.name LIKE $1"
+		args = append(args, "%"+name+"%")
+	}
+	
+	rows, err := pr.db.Query(query, args...)
 	if err != nil {
 		fmt.Printf("Error executing query: %v\n", err)
 		return nil

@@ -32,7 +32,7 @@ func (ph *ProductHandler) ResponseNull(w http.ResponseWriter, message string) {
 	untils.JSONRespon(w, http.StatusOK, nil, message)
 }
 
-func (ph *ProductHandler) CategoryHandler(w http.ResponseWriter, r *http.Request) {
+func (ph *ProductHandler) ProductHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		ph.getAllProduct(w, r)
@@ -43,7 +43,7 @@ func (ph *ProductHandler) CategoryHandler(w http.ResponseWriter, r *http.Request
 	}
 }
 
-func (ph *ProductHandler) CategoryIdHandler(w http.ResponseWriter, r *http.Request) {
+func (ph *ProductHandler) ProductIdHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		ph.getAllProductByCategoryId(w, r)
@@ -61,8 +61,8 @@ func (ph *ProductHandler) getAllProduct(w http.ResponseWriter, r *http.Request) 
 		ph.ResponseError(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
-
-	products := ph.service.GetAllProductService()
+	name := r.URL.Query().Get("name")
+	products := ph.service.GetAllProductService(name)
 
 	// Cek jika data kosong/null
 	if len(products) == 0 {
@@ -87,7 +87,7 @@ func (ph *ProductHandler) createProduct(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	//   Validation
+	// Validasi
 	if product.CategoryId == "" {
 		ph.ResponseError(w, "Category ID is required", http.StatusBadRequest)
 		return
@@ -152,7 +152,7 @@ func (ph *ProductHandler) updateProduct(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	//   Validation
+	// Validasi
 	if product.CategoryId == "" {
 		ph.ResponseError(w, "Category ID is required", http.StatusBadRequest)
 		return
