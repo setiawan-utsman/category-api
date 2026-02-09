@@ -81,7 +81,7 @@ func (ph *CategoryHandler) createCategory(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	// Validation
+	// Validasi
 	if category.Name == "" {
 		ph.ResponseError(w, "Name is required", http.StatusBadRequest)
 		return
@@ -107,7 +107,7 @@ func (ph *CategoryHandler) updateCategory(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	// Validation
+	// Validasi
 	if category.Id == "" {
 		ph.ResponseError(w, "Category ID is required", http.StatusBadRequest)
 		return

@@ -53,14 +53,27 @@ func main() {
 	categoryService := services.NewCategoryService(categoryRepo)
 	categoryHandler := handlers.NewCategoryHandler(categoryService)
 
-	// Setup routes
-	http.HandleFunc("/api/products", productHandler.CategoryHandler)
-	http.HandleFunc("/api/products/", productHandler.CategoryIdHandler)
+	transactionRepo := repositories.NewTransactionRepository(db)
+	transactionService := services.NewTransactionService(transactionRepo)
+	transactionHandler := handlers.NewTransactionHandler(transactionService)
+
+	reportRepo := repositories.NewReportRepository(db)
+	reportService := services.NewReportService(reportRepo)
+	reportHandler := handlers.NewReportHandler(reportService)
+
+	// Pengaturan route
+	http.HandleFunc("/api/products", productHandler.ProductHandler)
+	http.HandleFunc("/api/products/", productHandler.ProductIdHandler)
 
 	http.HandleFunc("/api/categories", categoryHandler.CategoryHandler)
 	http.HandleFunc("/api/categories/", categoryHandler.CategoryIdHandler)
 
-	// Start server
+	http.HandleFunc("/api/transactions", transactionHandler.TransactionHandler)
+	http.HandleFunc("/api/transactions/", transactionHandler.TransactionIdHandler)
+
+	http.HandleFunc("/api/report", reportHandler.GetReportHandler)
+
+	// Jalankan server
 	fmt.Println("Server Running di localhost:" + config.Port)
 	err = http.ListenAndServe(":"+config.Port, nil)
 	if err != nil {
